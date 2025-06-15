@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Você me ama?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('https://i.pinimg.com/originals/1d/7b/dc/1d7bdc99c1f2e4e6b9c355bb9913a1e3.jpg');
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #cc0000;
+            font-size: 2.5rem;
+        }
+
+        #invisivel {
+            visibility: hidden;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s ease;
+            position: relative;
+        }
+
+        #yesBtn {
+            background-color: #ff6666;
+            color: white;
+        }
+
+        #yesBtn:hover {
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur114.cur'), auto;
+            transform: scale(1.1);
+        }
+
+        #noBtn {
+            background-color: #999999;
+            color: white;
+            position: absolute;
+        }
+
+        #perdoaBtn {
+            background-color: #66cc66;
+            color: white;
+            display: none;
+        }
+
+        #loveMessage {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            color: #800000;
+            max-width: 600px;
+            text-align: center;
+            background-color: #fff0f0c4;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        img {
+            max-width: 300px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        #contador {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #333;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Você me ama?</h1>
+    <div class="buttons">
+        <button id="yesBtn">Sim ❤️</button>
+        <button id="invisivel"></button>
+        <button id="noBtn">Não 😢</button>
+        <button id="perdoaBtn">Me perdoa ❤️</button>
+        <button id="invisivel"></button>
+        <button id="invisivel"></button>
+    </div>
+
+    <div id="contador">Tentativas de apertar o Não: 0</div>
+    <div id="loveMessage"></div>
+
+    <audio id="hoverSound" src="vine-boom.mp3"></audio>
+    <!-- Música romântica -->
+    <audio id="loveMusic" src="https://www.bensound.com/bensound-music/bensound-romantic.mp3"></audio>
+
+    <!-- Biblioteca de confetes -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const hoverSound = document.getElementById('hoverSound');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const loveMessage = document.getElementById('loveMessage');
+        const perdoaBtn = document.getElementById('perdoaBtn');
+        const contador = document.getElementById('contador');
+        const music = document.getElementById('loveMusic');
+
+        let hoverCount = 0;
+        let warningShown = false;
+
+        // Faz o botão "Não" fugir com fade e teleporte
+        noBtn.addEventListener('mouseover', () => {
+            hoverCount++;
+            contador.innerText = `Tentativas de apertar o Não: ${hoverCount}`;
+            hoverSound.play();
+
+            if (hoverCount >= 3 && !warningShown) {
+                warningShown = true;
+                loveMessage.innerHTML = `
+                    <p>Você realmente quer apertar no Não? 🥺</p>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjjODbtqmsO3_rO2zwgflcXBxecBNQhtpQw&s" alt="Gatinho triste">
+                `;
+                return;
+            }
+
+            noBtn.style.opacity = 0;
+            setTimeout(() => {
+                const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+                const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+                noBtn.style.left = x + 'px';
+                noBtn.style.top = y + 'px';
+                noBtn.style.opacity = 1;
+            }, 300);
+        });
+
+        // Ao clicar em "Sim"
+        yesBtn.addEventListener('click', () => {
+            loveMessage.innerHTML = `
+                <p>Bruna, você é a razão da minha felicidade, 
+                me faz rir, me sinto cuidado, e muito amado. Você é minha fonte eterna de inspiração. 
+                Eu te amo mil milhões ❤️🥰</p>
+                <img src="https://i.pinimg.com/236x/df/d6/e6/dfd6e6ecc75e2740ed61594f47085c2f.jpg" alt="Gatinho apaixonado">
+            `;
+
+            // Soltar confetes
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+
+            // Tocar música
+            music.play();
+        });
+
+        noBtn.addEventListener('click', () => {
+            loveMessage.innerHTML = `
+                <p><strong>Não acredito que você apertou no Não! 😠</strong></p>
+                <img src="https://i.pinimg.com/474x/f9/12/98/f91298fb355d51a5f9857a683e5292bf.jpg" alt="Gatinho bravo">
+            `;
+        });
+
+        function enableAudio() {
+            hoverSound.play().then(() => {
+                hoverSound.pause();
+                hoverSound.currentTime = 0;
+                document.removeEventListener('click', enableAudio);
+            }).catch(() => {
+                // Ignora erros caso bloqueado
+            });
+        }
+
+        document.addEventListener('click', enableAudio);
+    </script>
+
+</body>
+</html>
